@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "dotenv": "^4.0.0",
     "elasticsearch": "^13.0.1"
   }
 }

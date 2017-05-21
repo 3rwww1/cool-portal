@@ -1,7 +1,15 @@
+require('dotenv').config();
 var express = require('express');
 var elasticsearch = require('elasticsearch');
 
-var host = 'https://search-mosquitto-k34joo6mwdg7ynzkts6epsxuqy.eu-west-1.es.amazonaws.com/';
+const required_vars = process.env.LISTEN_PORT && process.env.ES_URL && process.env.ES_INDEX && process.env.ES_TYPE
+
+if (!required_vars) {
+  console.error("Missing environment variables, check your .env file");
+  process.exit(1);
+}
+
+var host = process.env.ES_URL;
 
 var kibanaUrl = `${host}_plugin/kibana/`;
 
@@ -18,8 +26,8 @@ var app = express();
 
 app.get('/', function (req, res) {
   client.search({
-    index: 'pantin',
-    type: 'node9',
+    index: process.env.ES_INDEX,
+    type: process.env.ES_TYPE,
     body: {
       size: 0,
       aggs: {
@@ -100,6 +108,6 @@ app.get('/users/:userId', function (req, res) {
   });
 });
 
-app.listen(8080, function () {
-  console.log('listening on port 8080');
+app.listen(process.env.LISTEN_PORT, function () {
+  console.log(`HTTP server listening on port ${process.env.LISTEN_PORT}`);
 });
